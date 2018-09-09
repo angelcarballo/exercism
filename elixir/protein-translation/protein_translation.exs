@@ -1,3 +1,5 @@
+require IEx
+
 defmodule ProteinTranslation do
   @codon_size 3
   @protein_codons %{
@@ -29,11 +31,12 @@ defmodule ProteinTranslation do
       |> Enum.map(&List.to_string/1)
       |> Enum.map(&of_codon/1)
 
+
     if Keyword.has_key?(proteins, :error) do
       {:error, "invalid RNA"}
     else
-      Keyword.values(proteins)
-      |> Enum.split_while(&(&1 == "STOP"))
+      {proteins, _stop} = Keyword.values(proteins) |> Enum.split_while(&(&1 != "STOP"))
+      {:ok, proteins}
     end
   end
 
@@ -60,6 +63,9 @@ defmodule ProteinTranslation do
   """
   @spec of_codon(String.t()) :: {atom, String.t()}
   def of_codon(codon) do
-    Map.fetch(@codon_protein_map, codon)
+    case Map.fetch(@codon_protein_map, codon) do
+      {:ok, protein} -> {:ok, protein}
+      :error -> {:error, "invalid codon"}
+    end
   end
 end
