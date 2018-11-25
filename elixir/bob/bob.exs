@@ -15,7 +15,7 @@ defmodule Bob do
   end
 
   defp silence?(input) do
-    String.strip(input) |> String.length == 0
+    String.trim(input) |> String.length == 0
   end
 
   defp shouting?(input) do
