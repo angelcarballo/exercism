@@ -36,10 +36,8 @@ defmodule Scrabble do
   def score(word) do
     word
     |> String.upcase()
-    |> String.split()
-    |> Enum.reduce(0, fn letter, sum ->
-      sum + letter_value(letter)
-    end)
+    |> String.codepoints()
+    |> Enum.reduce(0, fn letter, sum -> sum + letter_value(letter) end)
   end
 
   defp letter_value(letter) do
