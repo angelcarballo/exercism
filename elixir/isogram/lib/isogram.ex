@@ -4,9 +4,10 @@ defmodule Isogram do
   """
   @spec isogram?(String.t()) :: boolean
   def isogram?(sentence) do
-    letters = letters_in_sentence(sentence)
-    unique_letters = Enum.uniq(letters)
-    Enum.count(letters) == Enum.count(unique_letters)
+    sentence
+    |>letters_in_sentence()
+    |> Enum.frequencies()
+    |> Enum.all?(fn ({_letter, frequency}) -> frequency == 1  end)
   end
 
   defp letters_in_sentence(sentence) do
