@@ -24,23 +24,13 @@ defmodule Markdown do
     text
     |> String.split("\n")
     |> Enum.map(&parse_bold_and_italic/1)
-    |> Enum.map(&parse_line/1)
-    |> Enum.join
+    |> Enum.map_join(&parse_line/1)
     |> wrap_lists()
   end
 
-  defp parse_line(line),             do: parse_line(line_type(line), line)
-  defp parse_line(:header, line),    do: parse_header(line)
-  defp parse_line(:list_item, line), do: parse_list(line)
-  defp parse_line(:paragraph, line), do: parse_paragraph(line)
-
-  defp line_type(line) do
-    cond do
-      String.starts_with?(line, "#") -> :header
-      String.starts_with?(line, "*") -> :list_item
-      true                           -> :paragraph
-    end
-  end
+  defp parse_line(line = "#" <> _), do: parse_header(line)
+  defp parse_line(line = "*" <> _), do: parse_list(line)
+  defp parse_line(line), do: parse_paragraph(line)
 
   defp parse_header(line) do
     {header_level, header_text} = parse_header_level(line)
@@ -58,10 +48,9 @@ defmodule Markdown do
 
   defp parse_bold_and_italic(line) do
     line
-    |> String.split
+    |> String.split()
     |> Enum.map(&parse_bold_and_italic_opening/1)
-    |> Enum.map(&parse_bold_and_italic_closing/1)
-    |> Enum.join(" ")
+    |> Enum.map_join(" ", &parse_bold_and_italic_closing/1)
   end
 
   defp parse_bold_and_italic_opening(word) do
