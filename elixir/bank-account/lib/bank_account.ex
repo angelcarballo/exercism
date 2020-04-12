@@ -50,6 +50,7 @@ defmodule BankAccount do
     {:ok, %BankAccount{balance: initial_balance, status: :open}}
   end
 
+  @impl true
   def handle_call(_event, _from, %{status: :closed} = account),
     do: {:reply, {:error, :account_closed}, account}
 
